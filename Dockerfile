@@ -18,8 +18,9 @@ WORKDIR /var/www/html
 
 COPY . /var/www/html
 
-# Permissions for runtime/cache
-RUN chown -R www-data:www-data /var/www/html/runtime
+# Create runtime directory and set permissions
+RUN mkdir -p /var/www/html/runtime && \
+    chown -R www-data:www-data /var/www/html/runtime
 
 EXPOSE 80
 
