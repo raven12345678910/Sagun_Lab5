@@ -41,4 +41,8 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
 | Used for adding middlewares
 |
 */
-$config['middlewares'] = [];
+$config['middlewares'] = [
+	// 'auth' => 'AuthMiddleware',
+	// You can map a short name to a middleware class, instance, or callable.
+	'auth' => 'AuthMiddleware',
+];

@@ -96,7 +96,35 @@ class Middleware
             throw new Exception("Middleware [$middleware] not registered.");
         }
 
-        return $this->map[$middleware]->handle($next);
+        $entry = $this->map[$middleware];
+
+        // If middleware is a callable/closure, call it directly
+        if (is_callable($entry)) {
+            return $entry($next);
+        }
+
+        // If middleware is a class name (string), try to load/instantiate it
+        if (is_string($entry)) {
+            try {
+                $instance = load_class($entry, 'middlewares');
+            } catch (Exception $e) {
+                if (class_exists($entry)) {
+                    $instance = new $entry();
+                } else {
+                    throw $e;
+                }
+            }
+        } elseif (is_object($entry)) {
+            $instance = $entry;
+        } else {
+            throw new Exception("Invalid middleware registration for [$middleware].");
+        }
+
+        if (!method_exists($instance, 'handle')) {
+            throw new Exception("Middleware [$middleware] must have a handle() method.");
+        }
+
+        return $instance->handle($next);
     }
 }
 
